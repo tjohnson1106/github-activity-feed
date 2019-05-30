@@ -35,6 +35,32 @@ const Login = () => {
         >
           Git Feed
         </h1>
+        <input
+          type="password"
+          name="token"
+          value=""
+          onChange={(e) => {}}
+          placeholder="Please paste your Github token"
+          css={{
+            marginBottom: 16,
+            borderRadius: 4,
+            fontSize: 18,
+            fontFamily: "monospace",
+            padding: "8px 16px",
+            border: "1px solid #424242",
+            boxShadow: "none",
+            width: "100%",
+            "&:focus &:hover": {
+              borderColor: "rgb(210, 54, 105)"
+            }
+          }}
+        />
+        <Button
+          css={{
+            width: "100%",
+            fontFamily: "monospace"
+          }}
+        />
       </form>
     </section>
   );
