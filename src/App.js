@@ -4,6 +4,26 @@ import "styled-components/macro";
 
 import Login from "./components/Login";
 
+const accessToken = localStorage.getItem("token");
+
+fetch("https://api.github.com/graphql", {
+  method: "POST",
+  headers: {
+    Authorization: `bearer${accessToken}`
+  },
+  body: JSON.stringify({
+    query: `
+    {
+      viewer {
+        name
+      }
+    }
+    `
+  })
+    .then((res) => res.json())
+    .then((json) => console.log(json))
+});
+
 const Global = createGlobalStyle({
   body: {
     backgroundColor: "#fff",
@@ -22,7 +42,19 @@ function App() {
   return (
     <>
       <Global />
-      <Login />
+      {accessToken ? (
+        <button
+          onClick={() => {
+            localStorage.clear();
+            window.location.reload();
+          }}
+        >
+          logout
+        </button>
+      ) : (
+        <Login />
+      )}
+
       <div css={{ color: "blue" }}>Github Search</div>
     </>
   );

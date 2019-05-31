@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 import "styled-components/macro";
 
 import { Button } from "./ui/Button";
 
 const Login = () => {
+  const [token, setToken] = useState("");
   return (
     <section
       css={{
@@ -23,6 +24,8 @@ const Login = () => {
         css={{ width: "100%" }}
         onSubmit={(e) => {
           e.preventDefault();
+          localStorage.setItem("token", token);
+          window.location.reload();
         }}
       >
         <h1
@@ -38,8 +41,10 @@ const Login = () => {
         <input
           type="password"
           name="token"
-          value=""
-          onChange={(e) => {}}
+          value={token}
+          onChange={(e) => {
+            setToken(e.target.value);
+          }}
           placeholder="Please paste your Github token"
           css={{
             marginBottom: 16,
@@ -60,7 +65,9 @@ const Login = () => {
             width: "100%",
             fontFamily: "monospace"
           }}
-        />
+        >
+          Submit
+        </Button>
       </form>
     </section>
   );
