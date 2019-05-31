@@ -1,8 +1,14 @@
 import React from "react";
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
 import { createGlobalStyle } from "styled-components";
 import "styled-components/macro";
 
 import Login from "./components/Login";
+
+const client = new ApolloClient({
+  uri: "https://api.github.com/graphql"
+});
 
 const accessToken = localStorage.getItem("token");
 
@@ -20,9 +26,9 @@ fetch("https://api.github.com/graphql", {
     }
     `
   })
-    .then((res) => res.json())
-    .then((json) => console.log(json))
-});
+})
+  .then((res) => res.json())
+  .then((json) => console.log(json));
 
 const Global = createGlobalStyle({
   body: {
@@ -43,14 +49,16 @@ function App() {
     <>
       <Global />
       {accessToken ? (
-        <button
-          onClick={() => {
-            localStorage.clear();
-            window.location.reload();
-          }}
-        >
-          logout
-        </button>
+        <ApolloProvider client={client}>
+          <button
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+          >
+            logout
+          </button>
+        </ApolloProvider>
       ) : (
         <Login />
       )}
