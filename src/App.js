@@ -48,20 +48,7 @@ function App() {
   return (
     <>
       <Global />
-      {accessToken ? (
-        <ApolloProvider client={client}>
-          <button
-            onClick={() => {
-              localStorage.clear();
-              window.location.reload();
-            }}
-          >
-            logout
-          </button>
-        </ApolloProvider>
-      ) : (
-        <Login />
-      )}
+      {accessToken ? <ApolloProvider client={client} /> : <Login />}
 
       <div css={{ color: "blue" }}>Github Search</div>
     </>
