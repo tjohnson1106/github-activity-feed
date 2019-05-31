@@ -2,7 +2,7 @@ import React from "react";
 import { ApolloClient } from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { setContext } from "apollo-link-context";
-import { createHttpLink } from "apollo-link-http";
+import { HttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { createGlobalStyle } from "styled-components";
@@ -12,19 +12,13 @@ import "styled-components/macro";
 import Login from "./components/Login";
 import SideBar from "./components/SideBar";
 
-const httpLink = createHttpLink({
-  uri: "https://api.github.com/graphql"
-});
-
 const accessToken = localStorage.getItem("token");
 
-const authLink = setContext((_, { headers }) => {
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : ""
-    }
-  };
+const httpLink = new HttpLink({
+  uri: "https://api.github.com/graphql",
+  headers: {
+    Authorization: `Bearer${accessToken}`
+  }
 });
 
 const client = new ApolloClient({
