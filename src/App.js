@@ -1,34 +1,36 @@
 import React from "react";
-import ApolloClient from "apollo-boost";
+import { ApolloClient } from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
+import { setContext } from "apollo-link-context";
+import { createHttpLink } from "apollo-link-http";
+import { setContext } from "apollo-link-context";
+import { InMemoryCache } from "apollo-cache-inmemory";
 import { createGlobalStyle } from "styled-components";
+
 import "styled-components/macro";
 
 import Login from "./components/Login";
+import SideBar from "./components/SideBar";
 
-const client = new ApolloClient({
+const httpLink = createHttpLink({
   uri: "https://api.github.com/graphql"
 });
 
 const accessToken = localStorage.getItem("token");
 
-fetch("https://api.github.com/graphql", {
-  method: "POST",
-  headers: {
-    Authorization: `bearer${accessToken}`
-  },
-  body: JSON.stringify({
-    query: `
-    {
-      viewer {
-        name
-      }
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : ""
     }
-    `
-  })
-})
-  .then((res) => res.json())
-  .then((json) => console.log(json));
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
+});
 
 const Global = createGlobalStyle({
   body: {
@@ -48,7 +50,13 @@ function App() {
   return (
     <>
       <Global />
-      {accessToken ? <ApolloProvider client={client} /> : <Login />}
+      {accessToken ? (
+        <ApolloProvider client={client}>
+          <SideBar />
+        </ApolloProvider>
+      ) : (
+        <Login />
+      )}
 
       <div css={{ color: "blue" }}>Github Search</div>
     </>
